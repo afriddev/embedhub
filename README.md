@@ -1,7 +1,18 @@
 # Fast Embed & Rerank Service — RAG-ready
 
-Blazing fast **embedding** and **cross-encoder reranker** service optimized for **Retrieval-Augmented Generation (RAG)**, **KG‑RAG (Knowledge-Graph RAG)**, and **Graph‑RAG** workflows. Self-host on a small GPU
+Blazing fast **embedding** and **cross-encoder reranker** service optimized for **Retrieval-Augmented Generation (RAG)**, **KG‑RAG (Knowledge-Graph RAG)**, and **Graph‑RAG** workflows. Self-host on a small GPU — no per-request fees, no token limits, and fully model‑swappable.
 
+## Key value
+
+- Run embeddings + cross-encoder reranker on your infra
+- Plug into RAG pipelines (text RAG, KG‑RAG, Graph‑RAG) for high-quality context retrieval
+- Production-ready: batching, FP16, warmup, configurable via `.env`
+
+## RAG patterns (short)
+
+- **Text RAG**: query → vector DB retrieve (top_k) → cross-encoder rerank → pass top results to LLM prompt.
+- **KG‑RAG**: embed node text/properties, index nodes + edges, retrieve candidate nodes/subgraph, rerank node texts, expand subgraph and include top nodes in prompt.
+- **Graph‑RAG**: use graph-aware retrieval (graph embeddings or neighbor walk), fetch subgraph, rerank node/document texts, fuse into LLM context.
 
 ## Minimal integration flow
 
@@ -60,7 +71,9 @@ Response:
 }
 
 ```
+
 ## Environment (example `.env`)
+
 ```env
 PORT = 8000
 MAX_TOKEN_LIMIT_PER_TEXT = 500
@@ -83,9 +96,13 @@ MAX_CE_RE_RANKER_BACTH_REQUEST_DELAY = 5
 ## Deployment
 
 ```bash
-git clone https://github.com/railtelai/embedhub.git
+git clone https://github.com/afrid/embedhub.git
 cd embedhub
 pip install -r requirements.txt
-python main.py
+uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1
 ```
 
+## Developer notes
+
+- Clean modular layout (controllers, services, implementations) for easy model swap and performance tuning.
+- Use this as an SDK component inside a RAG pipeline: embedding + indexing + retrieval + rerank → generator.
