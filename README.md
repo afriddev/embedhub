@@ -83,8 +83,8 @@ MAX_CE_RE_RANKER_BACTH_REQUEST_DELAY = 5
 ## Deployment
 
 ```bash
-git clone https://github.com/afrid/EmbeRank.git
-cd EmbeRank
+git clone https://github.com/railtelai/embedhub.git
+cd embedhub
 pip install -r requirements.txt
 python main.py
 ```
